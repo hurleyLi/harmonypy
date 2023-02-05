@@ -143,7 +143,8 @@ class Harmony(object):
             self, Z, Phi, Phi_moe, Pr_b, sigma,
             theta, max_iter_harmony, max_iter_kmeans, 
             epsilon_kmeans, epsilon_harmony, K, block_size,
-            lamb, verbose, draw, kmeans_method, random_state=None
+            lamb, verbose, draw, kmeans_method, random_state=None, 
+            final_iter = None
     ):
         self.Z_corr = np.array(Z)
         self.Z_orig = np.array(Z)
@@ -171,6 +172,7 @@ class Harmony(object):
         self.verbose         = verbose
         self.theta           = theta
         self.draw            = draw
+        self.final_iter      = final_iter
 
         self.objective_harmony        = []
         self.objective_kmeans         = []
@@ -265,6 +267,7 @@ class Harmony(object):
                         "Converged after {} iteration{}"
                         .format(i, 's' if i > 1 else '')
                     )
+                self.final_iter = i
                 break
         if verbose and not converged:
             logger.info("Stopped before convergence")
