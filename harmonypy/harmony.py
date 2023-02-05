@@ -133,7 +133,7 @@ def run_harmony(
     ho = Harmony(
         data_mat, phi, phi_moe, Pr_b, sigma, theta, max_iter_harmony, max_iter_kmeans,
         epsilon_cluster, epsilon_harmony, nclust, block_size, lamb_mat, verbose,
-        kmeans_method, random_state
+        draw, kmeans_method, random_state
     )
 
     return ho
@@ -143,7 +143,7 @@ class Harmony(object):
             self, Z, Phi, Phi_moe, Pr_b, sigma,
             theta, max_iter_harmony, max_iter_kmeans, 
             epsilon_kmeans, epsilon_harmony, K, block_size,
-            lamb, verbose, kmeans_method, random_state=None
+            lamb, verbose, draw, kmeans_method, random_state=None
     ):
         self.Z_corr = np.array(Z)
         self.Z_orig = np.array(Z)
@@ -179,6 +179,7 @@ class Harmony(object):
         self.objective_kmeans_cross   = []
         self.kmeans_rounds  = []
         self.kmeans_method  = kmeans_method
+        self.collect_zcorr_T = [self.Z_corr.T]
 
         self.allocate_buffers()
         self.init_cluster(random_state)
@@ -205,7 +206,7 @@ class Harmony(object):
                         n_init=10, max_iter=25, random_state=random_state)
             model.fit(self.Z_cos.T)
             km_centroids, km_labels = model.cluster_centers_, model.labels_
-        logger.info("sklearn.KMeans initialization complete.")
+        logger.info(f"{self.kmeans_method} initialization complete.")
         self.Y = km_centroids.T
         # (1) Normalize
         self.Y = self.Y / np.linalg.norm(self.Y, ord=2, axis=0)
