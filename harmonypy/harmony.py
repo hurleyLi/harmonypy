@@ -48,6 +48,7 @@ def run_harmony(
     epsilon_cluster = 1e-5,
     epsilon_harmony = 1e-4, 
     plot_convergence = False,
+    draw = False,
     verbose = True,
     reference_values = None,
     cluster_prior = None,
@@ -169,6 +170,7 @@ class Harmony(object):
         self.max_iter_kmeans = max_iter_kmeans
         self.verbose         = verbose
         self.theta           = theta
+        self.draw            = draw
 
         self.objective_harmony        = []
         self.objective_kmeans         = []
@@ -250,6 +252,10 @@ class Harmony(object):
                 self.Z_orig, self.Z_cos, self.Z_corr, self.R, self.W, self.K,
                 self.Phi_Rk, self.Phi_moe, self.lamb
             )
+
+            if self.draw:
+                self.collect_zcorr_T.append(self.Z_corr.T)
+
             # STEP 3: Check for convergence
             converged = self.check_convergence(1)
             if converged:
